@@ -4,7 +4,20 @@
   "description": "Example of CASL and express integration",
   "scripts": {
     "start": "node src",
-    "dev": "nodemon src",
+    "dev": "npm run dev:start",
+    "dev:start": "cross-env NODE_ENV=\"dev\" API_PORT=\"3002\" MONGO_PORT=\"3001\" MONGO_DB_PATH=\".private/data/db\" npm run dev:base",
+    "dev:base": "concurrently -n \"mongo,app\" -c \"blue.bold,white.bold\" \"npm run mongo:local\" \"npm run dev:raw\"",
+    "dev:raw": "concurrently -n \"api,client\" -c \"yellow.bold,green.bold\" \"npm run node:version && npm run api:dev:watch\" \"npm run client:dev\"",
+    "node:version": "echo-cli \"Node version:\" && node --version",
+    "mongo:clear": "rimraf .private/data/db/*",
+    "premongo:local": "cross-env-shell \"mkdirp $MONGO_DB_PATH\"",
+    "mongo:local": "cross-env-shell \"mongod --dbpath $MONGO_DB_PATH --port $MONGO_PORT\"",
+    "mongo:local:start": "cross-env MONGO_PORT=\"3001\" MONGO_DB_PATH=\".private/data/db\" npm run mongo:local",
+    "mongo:waiton": "ts-node ./scripts/waiton-mongo/waiton-mongo-cli.ts",
+    "client:dev": "echo-cli \"Client not implemented yet.\"",
+    "api:dev": "node --inspect=5858 ./src",
+    "api:dev:watch": "npm run mongo:waiton && nodemon",
+    "api:dev:start": "cross-env API_PORT=\"8080\" NODE_ENV=\"dev\" npm run api:dev:watch",
     "lint": "eslint --fix src/"
   },
   "author": "Sergii Stotskyi <sergiy.stotskiy@freaksidea.com>",
@@ -20,13 +33,23 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.0.0",
     "passport": "^0.4.0",
-    "passport-jwt": "^4.0.0"
+    "passport-jwt": "^4.0.0",
+    "tslib": "^1.10.0"
   },
   "devDependencies": {
+    "@types/mongoose": "^5.5.32",
+    "@types/node": "^12.12.14",
     "babel-eslint": "^10.0.3",
+    "concurrently": "^5.0.0",
+    "cross-env": "^6.0.3",
+    "echo-cli": "^1.0.8",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
-    "nodemon": "^1.17.5"
+    "mkdirp": "^0.5.1",
+    "nodemon": "^2.0.1",
+    "rimraf": "^3.0.0",
+    "ts-node": "^8.5.2",
+    "typescript": ">=3.5 <3.6"
   }
 }
