@@ -1,7 +1,14 @@
 {
   "name": "blog-express",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Example of CASL and express integration",
+  "scripts": {
+    "start": "node src",
+    "dev": "nodemon src",
+    "lint": "eslint --fix src/"
+  },
+  "author": "Sergii Stotskyi <sergiy.stotskiy@freaksidea.com>",
+  "license": "MIT",
   "main": "src/index.js",
   "dependencies": {
     "@casl/ability": "^3.0.1",
@@ -21,12 +28,5 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "nodemon": "^1.17.5"
-  },
-  "scripts": {
-    "start": "node src",
-    "dev": "nodemon src",
-    "lint": "eslint --fix src/"
-  },
-  "author": "Sergii Stotskyi <sergiy.stotskiy@freaksidea.com>",
-  "license": "MIT"
+  }
 }
