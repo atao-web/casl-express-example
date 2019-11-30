@@ -49,6 +49,7 @@ async function destroy(req, res) {
 }
 
 module.exports = {
+  model: Comment,
   create,
   update,
   destroy,

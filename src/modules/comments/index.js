@@ -1,6 +1,7 @@
 const comments = require('./service');
 
 module.exports = {
+  model: comments.model,
   configure(app) {
     app.get('/posts/:postId/comments', comments.findAll);
     app.post('/posts/:postId/comments', comments.create);

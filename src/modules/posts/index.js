@@ -1,6 +1,7 @@
 const posts = require('./service');
 
 module.exports = {
+  model: posts.model,
   configure(app) {
     app.get('/posts', posts.findAll);
     app.post('/posts', posts.create);

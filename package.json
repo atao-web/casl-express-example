@@ -9,6 +9,7 @@
     "dev:base": "concurrently -n \"mongo,app\" -c \"blue.bold,white.bold\" \"npm run mongo:local\" \"npm run dev:raw\"",
     "dev:raw": "concurrently -n \"api,client\" -c \"yellow.bold,green.bold\" \"npm run node:version && npm run api:dev:watch\" \"npm run client:dev\"",
     "node:version": "echo-cli \"Node version:\" && node --version",
+    "mongo:bson2json": "cd ./db/blog && ts-node ../../scripts/bson2json/bson2json.ts '../../src/fixtures/' comments posts users",
     "mongo:clear": "rimraf .private/data/db/*",
     "premongo:local": "cross-env-shell \"mkdirp $MONGO_DB_PATH\"",
     "mongo:local": "cross-env-shell \"mongod --dbpath $MONGO_DB_PATH --port $MONGO_PORT\"",

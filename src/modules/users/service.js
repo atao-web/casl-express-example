@@ -36,6 +36,7 @@ async function create(req, res) {
 }
 
 module.exports = {
+  model: User,
   create,
   find,
   update
