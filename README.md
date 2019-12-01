@@ -16,29 +16,33 @@ The main logic is built on top of modules (`src/modules`)
 **Note**: refactored to use CASL 2.0. See [@casl/ability][casl-ability] and [@casl/mongoose][casl-mongoose] for details.
 **Warning**: this code is just an example and doesn't follow best practices everywhere (e.g. it stores passwords without hashing).
 
-**Note #2**: in order to use with [Vuex example](https://github.com/stalniy/casl-vue-api-example) switch to branch [vue-api](https://github.com/stalniy/casl-express-example/tree/vue-api)
+**Note #2**: in order to use [Vuex example](https://github.com/stalniy/casl-vue-api-example) switch to branch [vue-api](https://github.com/stalniy/casl-express-example/tree/vue-api).
+
+**Note #3**: branch [babel7-ts](https://github.com/atao-web/casl-express-example/tree/babel7-ts) is setup to be agnostic: [Typescript](https://www.typescriptlang.org/) and [Ecmascript 2018](http://ecma-international.org/ecma-262/9.0/) can be used alike, even both together, thanks to [Babel 7](https://babeljs.io/docs/en/).
 
 ## Installation
 
-The shell used here is [Bash](https://www.gnu.org/software/bash/) under [Linux](https://www.linuxfoundation.org/). However, the npm scripts should work under any other OS.
+The shell used here is [Bash](https://www.gnu.org/software/bash/) under [Linux](https://www.linuxfoundation.org/). However under any other usual OS as eg Windows:
+* the [npm](https://www.npmjs.com/) scripts should work as it,
+* the adaptation of query instructions below (using [curl](https://curl.haxx.se/)) should be straightforward.
 
 Mongodb must be at least installed on the workstation, if not running:
 
-* the script *`start`* will use a ``blog` database on an already running instance of Mongo with URL `mongodb://localhost:27017/blog`
+* the script *`start`* will use a `blog` database on an already running instance of Mongo with URL `mongodb://localhost:27017/blog`
 * the script *`dev`* will start a dedicated instance, eg:
 
 ```bash
 git clone https://github.com/atao-web/casl-express-example.git && cd casl-express-example
 
 npm install
-npm run mongo:bson2json # fill embedded database if empty in development mode
+npm run mongo:bson2json # allow to fill embedded database if empty (in development mode)
 npm run dev
 ```
 
 ## Instruction to login
 
 Used tools: [curl](https://curl.haxx.se/), [json-parse-cli
-](https://www.npmjs.com/package/json-parse-cli), [jq](https://stedolan.github.io/jq/). This tools are just convenient to this presentation and in no way required to run the application.
+](https://www.npmjs.com/package/json-parse-cli), [jq](https://stedolan.github.io/jq/). This tools are just convenient for this presentation and in no way required to run the application.
 
 1. Create new user
 
@@ -175,7 +179,11 @@ curl -X GET "http://localhost:3002/posts/59761ba80203fb638e9bd85c/comments" -H "
 
 ## References
 
-[casl-express-example]: https://medium.com/@sergiy.stotskiy/authorization-with-casl-in-express-app-d94eb2e2b73b
-[casl-ability]: https://github.com/stalniy/casl/tree/master/packages/casl-ability
-[casl-mongoose]: https://github.com/stalniy/casl/tree/master/packages/casl-mongoose
+* [casl-express-example](https://medium.com/@sergiy.stotskiy/authorization-with-casl-in-express-app-d94eb2e2b73b)
+* [casl-ability](https://github.com/stalniy/casl/tree/master/packages/casl-ability)
+* [casl-mongoose](https://github.com/stalniy/casl/tree/master/packages/casl-mongoose)
+
+## License
+
+[MIT License](https://opensource.org/licenses/MIT). See [LICENSE](LICENSE).
 

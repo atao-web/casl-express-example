@@ -1,13 +1,8 @@
-const process = require('process');
-
-const createApp = require('./app');
-
-const API_PORT = 'API_PORT' in process.env ? (process.env['API_PORT'] || '') : '3030';
-
-createApp()
-  .then((app) => {
-    app.listen(API_PORT);
-    console.log(`API is listening on http://localhost:${API_PORT}`);
-  });
-
-  
+// Entrypoint for production mode only (ie running with build bundle). Otherwise see server.js
+ 
+// @babel/polyfill is now deprecated in favor of directly including core-js/stable (to polyfill ECMAScript features) 
+// and regenerator-runtime/runtime (needed to use transpiled generator functions):
+require('core-js/stable');
+require('regenerator-runtime/runtime');
+ 
+require('./server');

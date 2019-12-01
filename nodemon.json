@@ -2,5 +2,15 @@
     "watch": [
         "src"
     ],
+    "ext": "js,ts",
+    "ignore": [
+        "**/*.test.ts", "**/*.test.js",
+        "**/*.spec.ts", "**/*.spec.js",
+        ".git",
+        "node_modules",
+        ".follow-up",
+        ".private/data/db",
+        "db/blog"
+    ],
     "exec": "npm run api:dev"
 }
