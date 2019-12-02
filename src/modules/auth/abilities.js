@@ -1,4 +1,4 @@
-const { AbilityBuilder, Ability } = require('@casl/ability');
+import { AbilityBuilder, Ability } from '@casl/ability';
 
 function defineAbilitiesFor(user) {
   const { rules, can } = AbilityBuilder.extract();
@@ -16,7 +16,8 @@ function defineAbilitiesFor(user) {
 
 const ANONYMOUS_ABILITY = defineAbilitiesFor(null);
 
-module.exports = function createAbilities(req, res, next) {
+
+export function createAbilities(req, res, next) {
   req.ability = req.user.email ? defineAbilitiesFor(req.user) : ANONYMOUS_ABILITY;
   next();
 };

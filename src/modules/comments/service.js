@@ -1,13 +1,18 @@
-const { NotFound } = require('http-errors');
-const Comment = require('./model')();
+import { NotFound } from 'http-errors';
+import { commentFactory } from './model';
 
-async function findAll(req, res) {
+export const model = commentFactory();
+
+const Comment = model;
+
+export async function findAll(req, res) {
+
   const comments = await Comment.accessibleBy(req.ability);
 
   res.send({ comments });
 }
 
-async function create(req, res) {
+export async function create(req, res) {
   const comment = new Comment({
     ...req.body.comment,
     post: req.params.postId
@@ -23,7 +28,7 @@ async function create(req, res) {
   res.send({ comment });
 }
 
-async function update(req, res) {
+export async function update(req, res) {
   const comment = await Comment.findById(req.params.id);
 
   if (!comment) {
@@ -37,7 +42,7 @@ async function update(req, res) {
   res.send({ comment });
 }
 
-async function destroy(req, res) {
+export async function destroy(req, res) {
   const comment = await Comment.findById(req.params.id);
 
   if (comment) {
@@ -47,11 +52,3 @@ async function destroy(req, res) {
 
   res.send({ comment });
 }
-
-module.exports = {
-  model: Comment,
-  create,
-  update,
-  destroy,
-  findAll
-};

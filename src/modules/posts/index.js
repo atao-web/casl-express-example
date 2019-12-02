@@ -1,13 +1,11 @@
-const posts = require('./service');
+import { model as postModel, findAll, create, find, update, destroy } from './service';
 
-module.exports = {
-  model: posts.model,
-  configure(app) {
-    app.get('/posts', posts.findAll);
-    app.post('/posts', posts.create);
+export const model = postModel;
 
-    app.get('/posts/:id', posts.find);
-    app.patch('/posts/:id', posts.update);
-    app.delete('/posts/:id', posts.destroy);
-  }
-};
+export function configure(app) {
+  app.get('/posts', findAll);
+  app.post('/posts', create);
+  app.get('/posts/:id', find);
+  app.patch('/posts/:id', update);
+  app.delete('/posts/:id', destroy);
+}

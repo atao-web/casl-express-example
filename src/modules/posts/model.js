@@ -1,8 +1,6 @@
-const mongoose = require('mongoose');
+import { model, Schema } from 'mongoose';
 
-const { Schema } = mongoose;
-
-module.exports = function () {
+export function postFactory() {
   const Post = new Schema({
     author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     title: { type: String, required: true },
@@ -11,5 +9,5 @@ module.exports = function () {
     timestamps: true
   });
 
-  return mongoose.model('Post', Post);
+  return model('Post', Post);
 };

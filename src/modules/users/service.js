@@ -1,7 +1,11 @@
-const { NotFound } = require('http-errors');
-const User = require('./model')();
+import { NotFound } from 'http-errors';
+import { userFactory } from './model';
 
-async function find(req, res) {
+export const model = userFactory();
+
+const User = model;
+
+export async function find(req, res) {
   const user = await User.findById(req.params.id);
 
   if (!user) {
@@ -12,7 +16,7 @@ async function find(req, res) {
   res.send({ user });
 }
 
-async function update(req, res) {
+export async function update(req, res) {
   const user = await User.findById(req.params.id);
 
   if (!user) {
@@ -26,7 +30,7 @@ async function update(req, res) {
   res.send({ user });
 }
 
-async function create(req, res) {
+export async function create(req, res) {
   const user = new User(req.body.user);
 
   req.ability.throwUnlessCan('create', user);
@@ -34,10 +38,3 @@ async function create(req, res) {
 
   res.status(201).send({ user });
 }
-
-module.exports = {
-  model: User,
-  create,
-  find,
-  update
-};

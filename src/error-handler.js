@@ -1,5 +1,5 @@
-const { ForbiddenError } = require('@casl/ability');
-const { HttpError } = require('http-errors');
+import { ForbiddenError } from '@casl/ability';
+import { HttpError } from 'http-errors';
 
 function toJSON(err, options = {}) {
   const { stack, ...object } = typeof err.toJSON === 'function'
@@ -13,7 +13,7 @@ function toJSON(err, options = {}) {
   return object;
 }
 
-module.exports = function errorHandler(error, req, res, next) { // eslint-disable-line
+export function errorHandler(error, req, res, next) { // eslint-disable-line
   if (error instanceof ForbiddenError) {
     return res.status(403).send({
       status: 'forbidden',

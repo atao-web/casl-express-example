@@ -2,7 +2,7 @@
  
 // @babel/polyfill is now deprecated in favor of directly including core-js/stable (to polyfill ECMAScript features) 
 // and regenerator-runtime/runtime (needed to use transpiled generator functions):
-require('core-js/stable');
-require('regenerator-runtime/runtime');
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
  
-require('./server');
+import './server';

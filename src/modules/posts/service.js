@@ -1,12 +1,16 @@
-const { NotFound } = require('http-errors');
-const Post = require('./model')();
+import { NotFound } from 'http-errors';
+import { postFactory } from './model';
 
-async function findAll(req, res) {
+export const model = postFactory();
+
+const Post = model;
+
+export async function findAll(req, res) {
   const posts = await Post.accessibleBy(req.ability);
   res.send({ posts });
 }
 
-async function find(req, res) {
+export async function find(req, res) {
   const post = await Post.findById(req.params.id);
 
   if (!post) {
@@ -17,7 +21,7 @@ async function find(req, res) {
   res.send({ post });
 }
 
-async function create(req, res) {
+export async function create(req, res) {
   const post = new Post({
     ...req.body.post,
     author: req.user._id
@@ -28,7 +32,7 @@ async function create(req, res) {
   res.send({ post });
 }
 
-async function update(req, res) {
+export async function update(req, res) {
   const post = await Post.findById(req.params.id);
 
   if (!post) {
@@ -42,7 +46,7 @@ async function update(req, res) {
   res.send({ post });
 }
 
-async function destroy(req, res) {
+export async function destroy(req, res) {
   const post = await Post.findById(req.params.id);
 
   if (post) {
@@ -52,12 +56,3 @@ async function destroy(req, res) {
 
   res.send({ post });
 }
-
-module.exports = {
-  model: Post,
-  create,
-  update,
-  destroy,
-  find,
-  findAll
-};

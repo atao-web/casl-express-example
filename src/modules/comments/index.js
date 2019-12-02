@@ -1,12 +1,11 @@
-const comments = require('./service');
+import { model as commentModel, findAll, create, update, destroy } from './service';
 
-module.exports = {
-  model: comments.model,
-  configure(app) {
-    app.get('/posts/:postId/comments', comments.findAll);
-    app.post('/posts/:postId/comments', comments.create);
+export const model = commentModel;
 
-    app.patch('/posts/:postId/comments/:id', comments.update);
-    app.delete('/posts/:postId/comments/:id', comments.destroy);
-  }
-};
+export function configure(app) {
+  app.get('/posts/:postId/comments', findAll);
+  app.post('/posts/:postId/comments', create);
+
+  app.patch('/posts/:postId/comments/:id', update);
+  app.delete('/posts/:postId/comments/:id', destroy);
+}

@@ -1,8 +1,6 @@
-const mongoose = require('mongoose');
+import { model, Schema } from 'mongoose';
 
-const { Schema } = mongoose;
-
-module.exports = function () {
+export function userFactory() {
   const User = new Schema({
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true }
@@ -14,5 +12,5 @@ module.exports = function () {
     return password === this.password;
   });
 
-  return mongoose.model('User', User);
+  return model('User', User);
 };

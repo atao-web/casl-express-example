@@ -1,10 +1,9 @@
-const users = require('./service');
+import { model as userModel, find, update, create } from './service';
 
-module.exports = {
-  model: users.model,
-  configure(app) {
-    app.get('/users/:id', users.find);
-    app.patch('/users/:id', users.update);
-    app.post('/users', users.create);
-  }
-};
+export const model = userModel;
+
+export function configure(app) {
+  app.get('/users/:id', find);
+  app.patch('/users/:id', update);
+  app.post('/users', create);
+}

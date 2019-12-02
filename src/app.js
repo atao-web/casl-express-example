@@ -1,18 +1,18 @@
-const process = require('process');
-const { existsSync, readFileSync } = require('fs');
-const { resolve } = require('path');
+import { env } from 'process';
+import { existsSync, readFileSync } from 'fs';
+import { resolve } from 'path';
 
-const express = require('express');
-const { json, urlencoded } = require('express');
-require('express-async-errors');
+import express from 'express';
+import { json, urlencoded } from 'express';
+import 'express-async-errors';
 
-const mongoose = require('mongoose');
-const { accessibleRecordsPlugin } = require('@casl/mongoose');
-const errorHandler = require('./error-handler');
+import { plugin, connect } from 'mongoose';
+import { accessibleRecordsPlugin } from '@casl/mongoose';
+import { errorHandler } from './error-handler';
 
-const MONGO_PORT = process.env.MONGO_PORT || '27017';
-const MONGO_HOST = process.env.MONGO_HOST || 'localhost';
-const MONGO_DB_NAME = process.env.MONGO_DB_NAME || 'blog';
+const MONGO_PORT = env.MONGO_PORT || '27017';
+const MONGO_HOST = env.MONGO_HOST || 'localhost';
+const MONGO_DB_NAME = env.MONGO_DB_NAME || 'blog';
 
 const MONGOOSE_OPTIONS = {
   useNewUrlParser: true,
@@ -32,14 +32,14 @@ const FIXTURES = {
 
 const MODULES = ['auth', ...Object.values(FIXTURES)];
 
-module.exports = function createApp() {
+export async function createApp() {
   const app = express();
 
   app.use(json({ limit: '5mb' }));
   app.use(urlencoded({ extended: true }));
   app.disable('x-powered-by');
 
-  mongoose.plugin(accessibleRecordsPlugin);
+  plugin(accessibleRecordsPlugin);
 
   const models = MODULES.reduce((modelList, moduleName) => {
     const appModule = require(`./modules/${moduleName}`);
@@ -55,14 +55,9 @@ module.exports = function createApp() {
 
   app.use(errorHandler);
 
-  mongoose.Promise = global.Promise;
-  return mongoose.connect(
-    `mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB_NAME}`,
-    MONGOOSE_OPTIONS)
-    .then(() => {
-      loadFixtures(models);
-      return app;
-    });
+  await connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB_NAME}`, MONGOOSE_OPTIONS);
+  loadFixtures(models);
+  return app;
     
 };
 
