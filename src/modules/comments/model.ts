@@ -1,13 +1,13 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Model, Schema } from 'mongoose';
 
-export function commentFactory() {
+export function commentFactory (): Model<Document, {}> {
   const Comment = new Schema({
     author: { type: String, required: true },
     post: { type: Schema.Types.ObjectId, ref: 'Post', required: true },
-    text: { type: String, required: true },
+    text: { type: String, required: true }
   }, {
-    timestamps: true
-  });
+      timestamps: true
+    });
 
   return model('Comment', Comment);
 };

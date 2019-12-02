@@ -9,6 +9,7 @@ import 'express-async-errors';
 import { plugin, connect } from 'mongoose';
 import { accessibleRecordsPlugin } from '@casl/mongoose';
 import { errorHandler } from './error-handler';
+import { Model, Document } from 'mongoose';
 
 const MONGO_PORT = env.MONGO_PORT || '27017';
 const MONGO_HOST = env.MONGO_HOST || 'localhost';
@@ -32,7 +33,7 @@ const FIXTURES = {
 
 const MODULES = ['auth', ...Object.values(FIXTURES)];
 
-export async function createApp() {
+export async function createApp () {
   const app = express();
 
   app.use(json({ limit: '5mb' }));
@@ -41,28 +42,28 @@ export async function createApp() {
 
   plugin(accessibleRecordsPlugin);
 
-  const models = MODULES.reduce((modelList, moduleName) => {
-    const appModule = require(`./modules/${moduleName}`);
+  const models: Model<Document, {}>[] = [];
+  for (const moduleName of MODULES) {
+    const appModule = await import(`./modules/${moduleName}`);
 
     if (typeof appModule.configure === 'function') {
       appModule.configure(app);
     }
     if (appModule.model) {
-      modelList.push(appModule.model);
+      models.push(appModule.model);
     }
-    return modelList;
-  }, []);
+  };
 
   app.use(errorHandler);
 
   await connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB_NAME}`, MONGOOSE_OPTIONS);
   loadFixtures(models);
   return app;
-    
+
 };
 
-function loadFixtures(models) {
-  models.forEach(model => {
+function loadFixtures (models: Model<Document, {}>[]) {
+  models.forEach((model: Model<Document, {}>) => {
 
     model.find({}, (error, data) => {
       if (error) {
@@ -88,7 +89,7 @@ function loadFixtures(models) {
   });
 }
 
-function caslReviver(key, value) {
+function caslReviver (key: string, value: any) {
   if (value["$date"]) {
     return value["$date"];
   }

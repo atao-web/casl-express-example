@@ -16,7 +16,7 @@
     "mongo:local:start": "cross-env MONGO_PORT=\"3001\" MONGO_DB_PATH=\".private/data/db\" npm run mongo:local",
     "mongo:waiton": "ts-node ./scripts/waiton-mongo/waiton-mongo-cli.ts",
     "client:dev": "echo-cli \"Client not implemented yet.\"",
-    "api:dev": "node -r ./src/babel-register.js --inspect=5858 ./src/server.js",
+    "api:dev": "node -r ./src/babel-register.js --inspect=5858 ./src/server.ts",
     "api:dev:watch": "npm run mongo:waiton && nodemon",
     "api:dev:start": "cross-env API_PORT=\"8080\" NODE_ENV=\"dev\" npm run api:dev:watch",
     "lint": "tsc --project src --noEmit && eslint 'src/**/*.{js,ts}' --quiet",

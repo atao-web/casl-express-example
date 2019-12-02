@@ -9,4 +9,3 @@ createApp()
     app.listen(API_PORT);
     console.log(`API is listening on http://localhost:${API_PORT}`);
   });
-  
