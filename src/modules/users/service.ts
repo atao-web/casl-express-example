@@ -1,15 +1,14 @@
 import { NotFound } from 'http-errors';
+
 import { userFactory } from './model';
 
-export const model = userFactory();
-
-const User = model;
+export const userModel = userFactory();
 
 export async function find(req, res) {
-  const user = await User.findById(req.params.id);
+  const user = await userModel.findById(req.params.id);
 
   if (!user) {
-    throw new NotFound('User is not found');
+    throw new NotFound('User not found, id: ' + req.params.id);
   }
 
   req.ability.throwUnlessCan('read', user);
@@ -17,10 +16,10 @@ export async function find(req, res) {
 }
 
 export async function update(req, res) {
-  const user = await User.findById(req.params.id);
+  const user = await userModel.findById(req.params.id);
 
   if (!user) {
-    throw new NotFound('User is not found');
+    throw new NotFound('User to update not found, id: ' + req.params.id);
   }
 
   user.set(req.body.user);
@@ -31,7 +30,7 @@ export async function update(req, res) {
 }
 
 export async function create(req, res) {
-  const user = new User(req.body.user);
+  const user = new userModel(req.body.user);
 
   req.ability.throwUnlessCan('create', user);
   await user.save();

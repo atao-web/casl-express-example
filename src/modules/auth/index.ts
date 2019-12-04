@@ -1,17 +1,21 @@
+import { Application } from 'express';
 import passport from 'passport';
-import { configurePassport } from './jwt';
-import { create } from './service';
-import { createAbilities } from './abilities';
 
-export function configure(app) {
+import { configurePassport, JwtParams } from './jwt';
+import { createAbilities } from './abilities';
+import { create } from './service';
+
+export function configure (app: Application) {
   app.post('/session', create);
 
   const secret = '!_^secret.casl.authorization?!';
 
-  app.set('jwt.secret', secret);
-  app.set('jwt.issuer', 'CASL.Express');
-  app.set('jwt.audience', 'casl.io');
+  app.set(JwtParams.secret, secret);
+  app.set(JwtParams.issuer, 'CASL.Express');
+  app.set(JwtParams.audience, 'casl.io');
+
   configurePassport(passport, app);
+
   app.use(passport.initialize());
   app.use(passport.authenticate('jwt', { session: false }), createAbilities);
 }

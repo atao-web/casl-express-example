@@ -1,8 +1,10 @@
-import { model as postModel, findAll, create, find, update, destroy } from './service';
+import { Application } from 'express';
+
+import { postModel, findAll, create, find, update, destroy } from './service';
 
 export const model = postModel;
 
-export function configure(app) {
+export function configure(app: Application) {
   app.get('/posts', findAll);
   app.post('/posts', create);
   app.get('/posts/:id', find);

@@ -1,6 +1,8 @@
 import { AbilityBuilder, Ability } from '@casl/ability';
 
-function defineAbilitiesFor(user) {
+// import { User } from 'modules/users/model';
+
+function defineAbilitiesFor(user/*: User*/) {
   const { rules, can } = AbilityBuilder.extract();
 
   can('read', ['Post', 'Comment']);
@@ -16,8 +18,8 @@ function defineAbilitiesFor(user) {
 
 const ANONYMOUS_ABILITY = defineAbilitiesFor(null);
 
-
 export function createAbilities(req, res, next) {
+  console.log("createAbilities with req.user: ", req.user)
   req.ability = req.user.email ? defineAbilitiesFor(req.user) : ANONYMOUS_ABILITY;
   next();
 };

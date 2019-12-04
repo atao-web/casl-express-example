@@ -1,8 +1,13 @@
 import { Document, model, Model, Schema } from 'mongoose';
 
+export interface Post {
+  author: string;
+  title: string;
+  text: string;
+}
 
-export function postFactory (): Model<Document, {}> {
-  const Post = new Schema({
+export function postFactory (): Model<Post & Document, {}> {
+  const postSchema = new Schema({
     author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     title: { type: String, required: true },
     text: { type: String, required: true }
@@ -10,5 +15,5 @@ export function postFactory (): Model<Document, {}> {
       timestamps: true
     });
 
-  return model('Post', Post);
+  return model('Post', postSchema);
 };

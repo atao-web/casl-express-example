@@ -7,9 +7,10 @@ import { json, urlencoded } from 'express';
 import 'express-async-errors';
 
 import { plugin, connect } from 'mongoose';
-import { accessibleRecordsPlugin } from '@casl/mongoose';
-import { errorHandler } from './error-handler';
 import { Model, Document } from 'mongoose';
+import { accessibleRecordsPlugin } from '@casl/mongoose';
+
+import { errorHandler } from './error-handler';
 
 const MONGO_PORT = env.MONGO_PORT || '27017';
 const MONGO_HOST = env.MONGO_HOST || 'localhost';
@@ -56,6 +57,7 @@ export async function createApp () {
 
   app.use(errorHandler);
 
+  // mongoose.Promise = global.Promise; // mpromise is deprecated since Mongoose v5; Mongoose will use native Promise by default, here Node's one
   await connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB_NAME}`, MONGOOSE_OPTIONS);
   loadFixtures(models);
   return app;

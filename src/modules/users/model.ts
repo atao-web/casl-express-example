@@ -1,16 +1,21 @@
 import { model, Model, Document, Schema } from 'mongoose';
 
-export function userFactory (): Model<Document, {}> {
-  const User = new Schema({
+export interface User {
+  email: string;
+  password: string;
+}
+
+export function userFactory (): Model<User & Document, {}> {
+  const userSchema = new Schema({
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true }
   }, {
       timestamps: true
     });
 
-  User.method('isValidPassword', function isValidPassword (password: string) {
+    userSchema.method('isValidPassword', function isValidPassword (password: string) {
     return password === this.password;
   });
 
-  return model('User', User);
+  return model('User', userSchema);
 };

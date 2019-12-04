@@ -2,6 +2,8 @@ import { model } from 'mongoose';
 import { BadRequest, Unauthorized } from 'http-errors';
 import { sign } from 'jsonwebtoken';
 
+import { JwtParams } from './jwt';
+
 export async function create(req, res) {
   const { email, password } = req.body.session || {};
 
@@ -15,9 +17,9 @@ export async function create(req, res) {
     throw new Unauthorized('Not authenticated');
   }
 
-  const accessToken = sign({ id: user.id }, req.app.get('jwt.secret'), {
-    issuer: req.app.get('jwt.issuer'),
-    audience: req.app.get('jwt.audience')
+  const accessToken = sign({ id: user.id }, req.app.get(JwtParams.secret), {
+    issuer: req.app.get(JwtParams.issuer),
+    audience: req.app.get(JwtParams.audience)
   });
 
   res.send({ accessToken });
