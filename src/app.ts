@@ -59,18 +59,14 @@ export async function createApp () {
 
   // mongoose.Promise = global.Promise; // mpromise is deprecated since Mongoose v5; Mongoose will use native Promise by default, here Node's one
   await connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB_NAME}`, MONGOOSE_OPTIONS);
-  loadFixtures(models);
+  await loadFixtures(models);
   return app;
-
 };
 
-function loadFixtures (models: Model<Document, {}>[]) {
-  models.forEach((model: Model<Document, {}>) => {
-
-    model.find({}, (error, data) => {
-      if (error) {
-        throw new Error(`Mongo error as asking for '${model.modelName}' data: ` + JSON.stringify(error));
-      }
+async function loadFixtures (models: Model<Document, {}>[]) {
+  for (const model of models) {
+    try {
+      const data = await model.find({});
       if (data && data.length > 0) {
         console.log(`Development or stage phase, Mongo '${model.modelName}' data: ${data.length} already existing`);
         return;
@@ -84,11 +80,13 @@ function loadFixtures (models: Model<Document, {}>[]) {
       }
 
       console.log(`Development or stage phase, creating '${model.modelName}' documents: ${initData.length}`);
-      initData.forEach((item) => {
-        new model(item).save();
-      });
-    })
-  });
+      for (const item of initData) {
+        await (new model(item).save());
+      }
+    } catch (error) {
+        throw new Error(`Mongo error as loading '${model.modelName}' data: ` + JSON.stringify(error));
+    }
+  }
 }
 
 function caslReviver (key: string, value: any) {
