@@ -1,7 +1,9 @@
 import { NotFound } from 'http-errors';
 import { postFactory } from './model';
 
-export const postModel = postFactory();
+const postModel = postFactory();
+
+export const model = postModel;
 
 export async function findAll(req, res) {
   const posts = await postModel.accessibleBy(req.ability);

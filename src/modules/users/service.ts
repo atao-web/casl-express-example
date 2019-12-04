@@ -2,7 +2,9 @@ import { NotFound } from 'http-errors';
 
 import { userFactory } from './model';
 
-export const userModel = userFactory();
+const userModel = userFactory();
+
+export const model = userModel;
 
 export async function find(req, res) {
   const user = await userModel.findById(req.params.id);
