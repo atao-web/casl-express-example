@@ -10,7 +10,7 @@ function defineAbilitiesFor(user/*: User*/) {
 
   if (user) {
     can(['create', 'delete', 'update'], ['Post', 'Comment'], { author: user._id });
-    can(['read', 'update'], 'User', { _id: user.id });
+    can(['read', 'update'], 'User', { _id: user._id });
   }
 
   return new Ability(rules);
@@ -19,7 +19,6 @@ function defineAbilitiesFor(user/*: User*/) {
 const ANONYMOUS_ABILITY = defineAbilitiesFor(null);
 
 export function createAbilities(req, res, next) {
-  console.log("createAbilities with req.user: ", req.user)
   req.ability = req.user.email ? defineAbilitiesFor(req.user) : ANONYMOUS_ABILITY;
   next();
 };
