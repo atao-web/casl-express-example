@@ -17,9 +17,9 @@ const MONGO_HOST = env.MONGO_HOST || 'localhost';
 const MONGO_DB_NAME = env.MONGO_DB_NAME || 'blog';
 
 const MONGOOSE_OPTIONS = {
+  useUnifiedTopology: true, // order is relevant!
   useNewUrlParser: true,
-  useFindAndModify: false,
-  useUnifiedTopology: true
+  useFindAndModify: false
 };
 
 const FIXT_DIR = 'src/fixtures';
