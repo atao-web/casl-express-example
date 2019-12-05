@@ -1,19 +1,19 @@
-import { model } from 'mongoose';
 import { BadRequest, Unauthorized } from 'http-errors';
 import { sign } from 'jsonwebtoken';
 
+import { userInputStore } from '../users/model';
 import { JwtParams } from './jwt';
 
 export async function create(req, res) {
   const { email, password } = req.body.session || {};
 
   if (!email || !password) {
-    throw new BadRequest('Please specify "email" and "password" fields is "session" object');
+    throw new BadRequest('Please specify "email" and "password" fields in "session" object');
   }
 
-  const user = await model('User').findOne({ email });
+  const user = await userInputStore.findOne({ email });
 
-  if (!user || !user.isValidPassword(password)) {
+  if (!user || !await user.comparePassword(password)) {
     throw new Unauthorized('Not authenticated');
   }
 
