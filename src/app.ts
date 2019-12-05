@@ -17,7 +17,9 @@ const MONGO_HOST = env.MONGO_HOST || 'localhost';
 const MONGO_DB_NAME = env.MONGO_DB_NAME || 'blog';
 
 const MONGOOSE_OPTIONS = {
-  useUnifiedTopology: true, // order is relevant!
+  useUnifiedTopology: true,
+    // ignore warning on console about useUnifiedTopology or upgrade mongoose
+    // See [DeprecationWarning: \[...\], pass option { useUnifiedTopology: true } to the MongoClient constructor. #8156](https://github.com/Automattic/mongoose/issues/8156)
   useNewUrlParser: true,
   useFindAndModify: false
 };
@@ -59,6 +61,7 @@ export async function createApp () {
 
   // mongoose.Promise = global.Promise; // mpromise is deprecated since Mongoose v5; Mongoose will use native Promise by default, here Node's one
   await connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB_NAME}`, MONGOOSE_OPTIONS);
+  console.log(`API Server, connected to db: ${MONGO_DB_NAME}`);
   await loadFixtures(models);
   return app;
 };
