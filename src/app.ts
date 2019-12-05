@@ -31,7 +31,7 @@ const FIXT_FILE_EXT = '.json';
 const FIXTURES = {
   'Comment': 'comments',
   'Post': 'posts',
-  'User': 'users'
+  'UserInput': 'users'
 };
 
 const MODULES = ['auth', ...Object.values(FIXTURES)];
@@ -52,14 +52,15 @@ export async function createApp () {
     if (typeof appModule.configure === 'function') {
       appModule.configure(app);
     }
-    if (appModule.model) {
-      models.push(appModule.model);
+    if (appModule.store) {
+      models.push(appModule.store);
     }
   };
 
   app.use(errorHandler);
 
-  // mongoose.Promise = global.Promise; // mpromise is deprecated since Mongoose v5; Mongoose will use native Promise by default, here Node's one
+  // mpromise is deprecated since Mongoose v5; Mongoose will use native Promise by default, here Node's one
+  // mongoose.Promise = global.Promise; 
   await connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB_NAME}`, MONGOOSE_OPTIONS);
   console.log(`API Server, connected to db: ${MONGO_DB_NAME}`);
   await loadFixtures(models);

@@ -1,6 +1,7 @@
 {
     "watch": [
-        "src"
+        "src",
+        "shared"
     ],
     "ext": "js,ts",
     "ignore": [

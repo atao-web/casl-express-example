@@ -1,19 +1,5 @@
-import { Document, model, Model, Schema } from 'mongoose';
+import { getModelForClass } from '@typegoose/typegoose';
 
-export interface Post {
-  author: string;
-  title: string;
-  text: string;
-}
+import { Post } from '@shared/models';
 
-export function postFactory (): Model<Post & Document, {}> {
-  const postSchema = new Schema({
-    author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    title: { type: String, required: true },
-    text: { type: String, required: true }
-  }, {
-      timestamps: true
-    });
-
-  return model('Post', postSchema);
-};
+export const postStore = getModelForClass(Post);

@@ -1,21 +1,14 @@
-import { model, Model, Document, Schema } from 'mongoose';
+import { getModelForClass, getDiscriminatorModelForClass } from '@typegoose/typegoose';
 
-export interface User {
-  email: string;
-  password: string;
+import { User } from '@shared/models';
+
+export class UserInput extends User {
+  // This method should stay on server side as eventually passwords will be encrypted
+  isValidPassword (candidatePassword: string): boolean {
+    return candidatePassword === this.password;
+  }
 }
 
-export function userFactory (): Model<User & Document, {}> {
-  const userSchema = new Schema({
-    email: { type: String, unique: true, required: true },
-    password: { type: String, required: true }
-  }, {
-      timestamps: true
-    });
+export const userStore = getModelForClass(User);
 
-    userSchema.method('isValidPassword', function isValidPassword (password: string) {
-    return password === this.password;
-  });
-
-  return model('User', userSchema);
-};
+export const userInputStore = getDiscriminatorModelForClass(userStore, UserInput);

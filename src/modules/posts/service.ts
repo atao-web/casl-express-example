@@ -1,17 +1,13 @@
 import { NotFound } from 'http-errors';
-import { postFactory } from './model';
-
-const postModel = postFactory();
-
-export const model = postModel;
+import { postStore } from './model';
 
 export async function findAll(req, res) {
-  const posts = await postModel.accessibleBy(req.ability);
+  const posts = await postStore.accessibleBy(req.ability);
   res.send({ posts });
 }
 
 export async function find(req, res) {
-  const post = await postModel.findById(req.params.id);
+  const post = await postStore.findById(req.params.id);
 
   if (!post) {
     throw new NotFound('Post not found, id: ' + req.params.id);
@@ -22,7 +18,7 @@ export async function find(req, res) {
 }
 
 export async function create(req, res) {
-  const post = new postModel({
+  const post = new postStore({
     ...req.body.post,
     author: req.user._id
   });
@@ -33,7 +29,7 @@ export async function create(req, res) {
 }
 
 export async function update(req, res) {
-  const post = await postModel.findById(req.params.id);
+  const post = await postStore.findById(req.params.id);
 
   if (!post) {
     throw new NotFound('Post to update not found, id: ' + req.params.id);
@@ -47,7 +43,7 @@ export async function update(req, res) {
 }
 
 export async function destroy(req, res) {
-  const post = await postModel.findById(req.params.id);
+  const post = await postStore.findById(req.params.id);
 
   if (post) {
     req.ability.throwUnlessCan('delete', post);

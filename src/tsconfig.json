@@ -6,6 +6,11 @@
         "allowSyntheticDefaultImports": true,
         "outDir": "../dist/server",
         "baseUrl": "",
+        "paths": {
+            "@shared/*": [
+                "../shared/*"
+            ]
+        },
         "module": "commonjs",
         "moduleResolution": "node",
         "lib": [

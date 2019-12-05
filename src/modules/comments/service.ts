@@ -1,9 +1,5 @@
 import { NotFound } from 'http-errors';
-import { commentFactory } from './model';
-
-const commentModel = commentFactory();
-
-export const model = commentModel;
+import { commentStore as commentModel } from './model';
 
 export async function findAll(req, res) {
 

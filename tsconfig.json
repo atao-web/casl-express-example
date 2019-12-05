@@ -7,6 +7,9 @@
     "moduleResolution": "node",
     "outDir": "./dist/out-tsc",
     "baseUrl": "./",
+    "paths": {
+      "@shared/*": ["./shared/*"]
+    },
     "sourceMap": true,
     "declaration": false,
     "emitDecoratorMetadata": true,
