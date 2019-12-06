@@ -1,7 +1,7 @@
 
 import { Application } from 'express';
 import { PassportStatic } from 'passport';
-import { Strategy, StrategyOptions, VerifyCallback, VerifiedCallback } from 'passport-jwt';
+import { ExtractJwt, Strategy, StrategyOptions, VerifiedCallback, VerifyCallback } from 'passport-jwt';
 import { model } from 'mongoose';
 import { sign, Secret, SignOptions } from 'jsonwebtoken';
 
@@ -38,16 +38,19 @@ export function configurePassport(passport: PassportStatic, app: Application) {
     issuer: app.get(JwtParams.issuer),
     audience: app.get(JwtParams.audience)
   };
+
   BLANK_JWT = BLANK_JWT || generateBlankJwt(app.get(JwtParams.secret), signOptions);
   
   const strategyOptions: StrategyOptions = {
     ...signOptions, 
     secretOrKey: app.get(JwtParams.secret),
-    jwtFromRequest: req => req.headers.authorization || BLANK_JWT
+    jwtFromRequest: req => {
+      return ExtractJwt.fromAuthHeaderWithScheme('jwt')(req) || BLANK_JWT; // legacy auth scheme
+    }
   };
 
   const strategy = new Strategy(strategyOptions, findUser);
 
-  passport.use(strategy);
+  passport.use('jwt', strategy);
 
 }

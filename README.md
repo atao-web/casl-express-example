@@ -82,14 +82,36 @@ These tools are in no way required to build or run the application.
 
 ```bash
 
-NEW_USER=$(curl -X POST "http://localhost:3002/users" -H "Content-Type: application/json" -d '{"user":{"email":"dummy@alavista.bl","password":"dummy"}}' -w '\n' -sS)
+NEW_USER=$(curl -X POST "http://localhost:3002/users" -H "Content-Type: application/json" -d '{"user":{"email":"dummy@alavista.bl","password":"dummy"}}' -w '\n' -sSv)
+# *   Trying ::1...
+# * TCP_NODELAY set
+# * Connected to localhost (::1) port 3002 (#0)
+# > POST /users HTTP/1.1
+# > Host: localhost:3002
+# > User-Agent: curl/7.58.0
+# > Accept: */*
+# > Content-Type: application/json
+# > Content-Length: 57
+# > 
+# } [57 bytes data]
+# * upload completely sent off: 57 out of 57 bytes
+# < HTTP/1.1 201 Created
+# < Content-Type: application/json; charset=utf-8
+# < Content-Length: 116
+# < ETag: W/"75-8Mo3U5Zl1DaIecE30nGh9gPLX/0"
+# < Date: Thu, 29 Nov 2019 06:19:27 GMT
+# < Connection: keep-alive
+# < 
+# { [116 bytes data]
+# * Connection #0 to host localhost left intact
+
 
 echo $NEW_USER | json-parse -f json -i 4
 # {
 #     "user": {
 #         "_id": "5de0b86f76ce2519553449ef",
+#         "__t": "UserInput",
 #         "email": "dummy@alavista.bl",
-#         "password": "dummy",
 #         "createdAt": "2019-11-29T06:19:27.205Z",
 #         "updatedAt": "2019-11-29T06:19:27.205Z",
 #         "__v": 0
@@ -134,10 +156,15 @@ echo $SESSION | json-parse -f json -i 4
 #     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkZTBiODZmNzZjZTI1MTk1NTM0NDllZiIsImlhdCI6MTU3NTAwODQ0MiwiYXVkIjoiY2FzbC5pbyIsImlzcyI6IkNBU0wuRXhwcmVzcyJ9.Y_y_lGgOm9UP3c1T6-CLVEVC4YpCZjOjdkox9L9WUuU"
 # }
 
-ACCESS_TOKEN=$(echo $SESSION | jq -r '.accessToken')
+RAW_ACCESS_TOKEN=$(echo $SESSION | jq -r '.accessToken')
+
+echo $RAW_ACCESS_TOKEN
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkZTBiODZmNzZjZTI1MTk1NTM0NDllZiIsImlhdCI6MTU3NTAwODQ0MiwiYXVkIjoiY2FzbC5pbyIsImlzcyI6IkNBU0wuRXhwcmVzcyJ9.Y_y_lGgOm9UP3c1T6-CLVEVC4YpCZjOjdkox9L9WUuU
+
+ACCESS_TOKEN="JWT ${RAW_ACCESS_TOKEN}"
 
 echo $ACCESS_TOKEN
-# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkZTBiODZmNzZjZTI1MTk1NTM0NDllZiIsImlhdCI6MTU3NTAwODQ0MiwiYXVkIjoiY2FzbC5pbyIsImlzcyI6IkNBU0wuRXhwcmVzcyJ9.Y_y_lGgOm9UP3c1T6-CLVEVC4YpCZjOjdkox9L9WUuU
+
 
 ```
 
@@ -158,8 +185,8 @@ curl -X GET "http://localhost:3002/users/$ID_USER" -H "Authorization: $ACCESS_TO
 # {
 #     "user": {
 #         "_id": "5de0b86f76ce2519553449ef",
+#         "__t": "UserInput",
 #         "email": "dummy@alavista.bl",
-#         "password": "dummy",
 #         "createdAt": "2019-11-29T06:19:27.205Z",
 #         "updatedAt": "2019-11-29T06:19:27.205Z",
 #         "__v": 0
@@ -241,7 +268,6 @@ curl -X PATCH "http://localhost:3002/posts/5de518b4f8ae9e3f682f6c95" -H "Content
 #     }
 # }
 
-
 ```
 
 ## References
@@ -263,3 +289,5 @@ curl -X PATCH "http://localhost:3002/posts/5de518b4f8ae9e3f682f6c95" -H "Content
 * [TypeScript With Babel: A Beautiful Marriage](https://iamturns.com/typescript-babel/), by Matt Turnbull, Last updated: Feb 12 (2019)
 
 * [TypeScript and Babel 7](https://devblogs.microsoft.com/typescript/typescript-and-babel-7/), Daniel Rosenwasser, August 27th, 2018
+
+* [Token based authentication in Node.js with Passport, JWT and bcrypt](https://jonathas.com/token-based-authentication-in-nodejs-with-passport-jwt-and-bcrypt/), Jonathas Ribeiro,  October 21, 2017.
