@@ -1,4 +1,4 @@
-import { compare, genSalt, hash as bcHash } from 'bcryptjs';
+import { compareSync, genSalt, hash as bcHash } from 'bcryptjs';
 import { HookNextFunction } from 'mongoose';
 import { DocumentType, getDiscriminatorModelForClass, getModelForClass, pre } from '@typegoose/typegoose';
 
@@ -26,14 +26,8 @@ function hashPasswordBeforeSavingUser (user: DocumentType<UserInput>/*|DocumentQ
   hashPasswordBeforeSavingUser(this, next);
 })
 export class UserInput extends User {
-  comparePassword (candidatePassword: string): Promise<boolean> {
-    const password = this.password;
-    return new Promise((resolve, reject) => {
-      compare(candidatePassword, password, (error, success) => {
-        if (error) return reject(error);
-        return resolve(success);
-      });
-    });
+  comparePassword (candidatePassword: string): boolean {
+    return compareSync(candidatePassword, this.password);
   }
 }
 

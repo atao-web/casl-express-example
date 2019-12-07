@@ -20,7 +20,7 @@ export async function create(req: Request, res: Response) {
 
   const user = await userInputStore.findOne({ email });
 
-  if (!user || !await user.comparePassword(password)) {
+  if (!user || !user.comparePassword(password)) {
     throw new Unauthorized('Not authenticated');
   }
 
