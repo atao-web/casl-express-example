@@ -1,25 +1,18 @@
-import { compareSync, genSalt, hash as bcHash } from 'bcryptjs';
+import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
 import { HookNextFunction } from 'mongoose';
 import { DocumentType, getDiscriminatorModelForClass, getModelForClass, pre } from '@typegoose/typegoose';
 
 import { User } from '@shared/models';
 
-function hashPasswordBeforeSavingUser (user: DocumentType<UserInput>/*|DocumentQuery<UserInput>*/, next: HookNextFunction): void {
-  if (!user.isModified('password')) {
-    return;
+function hashPasswordBeforeSavingUser (user: DocumentType<UserInput>, next: HookNextFunction): void {
+  try {
+    const salt = genSaltSync(10);
+    const hash = hashSync(user.password, salt);
+    user.password = hash;
+    return next();
+  } catch (error) {
+    return next(error);
   }
-  genSalt(10, (err, salt) => {
-    if (err) {
-      return next(err);
-    }
-    bcHash(user.password, salt, (error, hash) => {
-      if (error) {
-        return next(error);
-      }
-      user.password = hash;
-      return next();
-    });
-  });
 }
 
 @pre<UserInput>('save', function (next: HookNextFunction) {
