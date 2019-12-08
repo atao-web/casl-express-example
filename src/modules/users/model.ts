@@ -4,11 +4,14 @@ import { DocumentType, getDiscriminatorModelForClass, getModelForClass, pre } fr
 
 import { User } from '@shared/models';
 
-function hashPasswordBeforeSavingUser (user: DocumentType<UserInput>, next: HookNextFunction): void {
+function hashPasswordBeforeSavingUser (password: string, isPasswordDirty: () => boolean, savePassword: (hash: string) => void, next: HookNextFunction): void {
+  if (!isPasswordDirty()) {
+    return;
+  }
   try {
     const salt = genSaltSync(10);
-    const hash = hashSync(user.password, salt);
-    user.password = hash;
+    const hash = hashSync(password, salt);
+    savePassword(hash);
     return next();
   } catch (error) {
     return next(error);
@@ -16,7 +19,16 @@ function hashPasswordBeforeSavingUser (user: DocumentType<UserInput>, next: Hook
 }
 
 @pre<UserInput>('save', function (next: HookNextFunction) {
-  hashPasswordBeforeSavingUser(this, next);
+  hashPasswordBeforeSavingUser(this.password, 
+    () => this.isModified('password'), 
+    hash => { this.password = hash }, 
+    next);
+})
+@pre<UserInput>('update', function (next: HookNextFunction) {
+  hashPasswordBeforeSavingUser(this.getUpdate().$set.password, 
+  () => this.getUpdate().$set.password, 
+  hash => { this.getUpdate().$set.password = hash }, 
+  next);
 })
 export class UserInput extends User {
   comparePassword (candidatePassword: string): boolean {
