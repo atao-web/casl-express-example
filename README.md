@@ -67,12 +67,9 @@ npm run dev
 
 ## Instruction to login
 
-Tools (°) used for conveniency in this presentation to launch requests and display responses:
-* [curl](https://curl.haxx.se/), 
+To call the API endpoints, [curl](https://curl.haxx.se/) will be used as client (°), with some other tools for conveniency, ie:
 * [json-parse-cli](https://www.npmjs.com/package/json-parse-cli), 
 * [jq](https://stedolan.github.io/jq/). 
-
-These tools are in no way required to build or run the application.
 
 > The query reponses are provided as a guide.
 
@@ -83,7 +80,7 @@ These tools are in no way required to build or run the application.
 ```bash
 
 NEW_USER=$(curl -X POST "http://localhost:3002/users" -H "Content-Type: application/json" -d '{"user":{"email":"dummy@alavista.bl","password":"dummy"}}' -w '\n' -sSv)
-# *   Trying ::1...
+# Trying ::1...
 # * TCP_NODELAY set
 # * Connected to localhost (::1) port 3002 (#0)
 # > POST /users HTTP/1.1
@@ -97,31 +94,31 @@ NEW_USER=$(curl -X POST "http://localhost:3002/users" -H "Content-Type: applicat
 # * upload completely sent off: 57 out of 57 bytes
 # < HTTP/1.1 201 Created
 # < Content-Type: application/json; charset=utf-8
-# < Content-Length: 116
-# < ETag: W/"75-8Mo3U5Zl1DaIecE30nGh9gPLX/0"
-# < Date: Thu, 29 Nov 2019 06:19:27 GMT
+# < Content-Length: 175
+# < ETag: W/"af-NyhVk/npqNDaY6rka7B9jXGeOG4"
+# < Date: Sun, 08 Dec 2019 07:19:32 GMT
 # < Connection: keep-alive
 # < 
-# { [116 bytes data]
+# { [175 bytes data]
 # * Connection #0 to host localhost left intact
 
 
 echo $NEW_USER | json-parse -f json -i 4
 # {
 #     "user": {
-#         "_id": "5de0b86f76ce2519553449ef",
+#         "_id": "5deca4047f1bda6e3127d7f3",
 #         "__t": "UserInput",
 #         "email": "dummy@alavista.bl",
-#         "createdAt": "2019-11-29T06:19:27.205Z",
-#         "updatedAt": "2019-11-29T06:19:27.205Z",
+#         "createdAt": "2019-12-08T07:19:32.321Z",
+#         "updatedAt": "2019-12-08T07:19:32.321Z",
 #         "__v": 0
 #     }
 # }
 
-ID_USER=$(echo $NEW_USER | jq -r '.user._id')
+USER_ID=$(echo $NEW_USER | jq -r '.user._id')
 
-echo $ID_USER
-# 5de0b86f76ce2519553449ef
+echo $USER_ID
+# 5deca4047f1bda6e3127d7f3
 
 ```
 
@@ -143,28 +140,25 @@ SESSION=$(curl -H "Content-Type: application/json" -d '{"session":{"email":"dumm
 # * upload completely sent off: 60 out of 60 bytes
 # < HTTP/1.1 200 OK
 # < Content-Type: application/json; charset=utf-8
-# < Content-Length: 215
-# < ETag: W/"d7-fol5aTHrxD40x6Yndb/BHRazDEU"
-# < Date: Fri, 29 Nov 2019 06:20:42 GMT
+# < Content-Length: 308
+# < ETag: W/"134-MOZtklZhtqZRdW2EStJ5NM2wS2I"
+# < Date: Sun, 08 Dec 2019 07:19:32 GMT
 # < Connection: keep-alive
 # < 
-# { [215 bytes data]
+# { [308 bytes data]
 # * Connection #0 to host localhost left intact
 
 echo $SESSION | json-parse -f json -i 4
 # {
-#     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkZTBiODZmNzZjZTI1MTk1NTM0NDllZiIsImlhdCI6MTU3NTAwODQ0MiwiYXVkIjoiY2FzbC5pbyIsImlzcyI6IkNBU0wuRXhwcmVzcyJ9.Y_y_lGgOm9UP3c1T6-CLVEVC4YpCZjOjdkox9L9WUuU"
+#     "token": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzYzOTQzNzIsImlkIjoiNWRlY2E0MDQ3ZjFiZGE2ZTMxMjdkN2YzIiwiaWF0IjoxNTc1Nzg5NTcyLCJhdWQiOiJjYXNsLmlvIiwiaXNzIjoiQ0FTTC5FeHByZXNzIn0.spW_RyEtpsj9W_NuHJ0mTM-ddhPX8xJyx8jGsKWbaoE",
+#     "expires": "2019-12-15T08:19:32+01:00",
+#     "user": "5deca4047f1bda6e3127d7f3"
 # }
 
-RAW_ACCESS_TOKEN=$(echo $SESSION | jq -r '.accessToken')
-
-echo $RAW_ACCESS_TOKEN
-# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkZTBiODZmNzZjZTI1MTk1NTM0NDllZiIsImlhdCI6MTU3NTAwODQ0MiwiYXVkIjoiY2FzbC5pbyIsImlzcyI6IkNBU0wuRXhwcmVzcyJ9.Y_y_lGgOm9UP3c1T6-CLVEVC4YpCZjOjdkox9L9WUuU
-
-ACCESS_TOKEN="JWT ${RAW_ACCESS_TOKEN}"
+ACCESS_TOKEN=$(echo $SESSION | jq -r '.token')
 
 echo $ACCESS_TOKEN
-
+# JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzYzOTQzNzIsImlkIjoiNWRlY2E0MDQ3ZjFiZGE2ZTMxMjdkN2YzIiwiaWF0IjoxNTc1Nzg5NTcyLCJhdWQiOiJjYXNsLmlvIiwiaXNzIjoiQ0FTTC5FeHByZXNzIn0.spW_RyEtpsj9W_NuHJ0mTM-ddhPX8xJyx8jGsKWbaoE
 
 ```
 
@@ -181,14 +175,14 @@ For example, to get current user data:
 
 ```bash 
 
-curl -X GET "http://localhost:3002/users/$ID_USER" -H "Authorization: $ACCESS_TOKEN" -H "Content-Type: application/json" -w '\n' -sS | json-parse -f json -i 4
+curl -X GET "http://localhost:3002/users/$USER_ID" -H "Authorization: $ACCESS_TOKEN" -H "Content-Type: application/json" -w '\n' -sS | json-parse -f json -i 4
 # {
 #     "user": {
-#         "_id": "5de0b86f76ce2519553449ef",
 #         "__t": "UserInput",
+#         "_id": "5deca4047f1bda6e3127d7f3",
 #         "email": "dummy@alavista.bl",
-#         "createdAt": "2019-11-29T06:19:27.205Z",
-#         "updatedAt": "2019-11-29T06:19:27.205Z",
+#         "createdAt": "2019-12-08T07:19:32.321Z",
+#         "updatedAt": "2019-12-08T07:19:32.321Z",
 #         "__v": 0
 #     }
 # }
@@ -202,12 +196,12 @@ To create a comment on a existing post:
 curl -X POST "http://localhost:3002/posts/59761ba80203fb638e9bd85c/comments" -H "Content-Type: application/json" -H "Authorization: $ACCESS_TOKEN" -d '{"comment":{"text":"Ouahh ... Too good!"}}' -w '\n' -sS | json-parse -f json -i 4
 # {
 #     "comment": {
-#         "_id": "5de0b92676ce2519553449f0",
+#         "_id": "5deca4047f1bda6e3127d7f4",
 #         "text": "Ouahh ... Too good!",
 #         "post": "59761ba80203fb638e9bd85c",
-#         "author": "5de0b86f76ce2519553449ef",
-#         "createdAt": "2019-11-29T06:22:30.427Z",
-#         "updatedAt": "2019-11-29T06:22:30.427Z",
+#         "author": "5deca4047f1bda6e3127d7f3",
+#         "createdAt": "2019-12-08T07:19:32.964Z",
+#         "updatedAt": "2019-12-08T07:19:32.964Z",
 #         "__v": 0
 #     }
 # }
@@ -225,12 +219,12 @@ curl -X GET "http://localhost:3002/posts/59761ba80203fb638e9bd85c/comments" -H "
 #             "__v": 0
 #         },
 #         {
-#             "_id": "5de0b92676ce2519553449f0",
+#             "_id": "5deca4047f1bda6e3127d7f4",
 #             "text": "Ouahh ... Too good!",
 #             "post": "59761ba80203fb638e9bd85c",
-#             "author": "5de0b86f76ce2519553449ef",
-#             "createdAt": "2019-11-29T06:22:30.427Z",
-#             "updatedAt": "2019-11-29T06:22:30.427Z",
+#             "author": "5deca4047f1bda6e3127d7f3",
+#             "createdAt": "2019-12-08T07:19:32.964Z",
+#             "updatedAt": "2019-12-08T07:19:32.964Z",
 #             "__v": 0
 #         }
 #     ]
@@ -242,28 +236,52 @@ curl -X PATCH "http://localhost:3002/posts/59761ba80203fb638e9bd85c" -H "Content
 #     "message": "Cannot execute \"update\" on \"Post\""
 # }
 
-curl -X POST "http://localhost:3002/posts/" -H "Content-Type: application/json" -H "Authorization: $ACCESS_TOKEN" -d '{"post":{"title":"Yet a first article...","text":"Ouahh ... Too good!"}}' -w '\n' -sS | json-parse -f json -i 4
+POST_CREATE=$(curl -X POST "http://localhost:3002/posts/" -H "Content-Type: application/json" -H "Authorization: $ACCESS_TOKEN" -d '{"post":{"title":"Yet a first article...","text":"Ouahh ... Too good!"}}' -w '\n' -sSv)
+# *   Trying ::1...
+# * TCP_NODELAY set
+# * Connected to localhost (::1) port 3002 (#0)
+# > POST /posts/ HTTP/1.1
+# > Host: localhost:3002
+# > User-Agent: curl/7.58.0
+# > Accept: */*
+# > Content-Type: application/json
+# > Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzYzOTQzNzIsImlkIjoiNWRlY2E0MDQ3ZjFiZGE2ZTMxMjdkN2YzIiwiaWF0IjoxNTc1Nzg5NTcyLCJhdWQiOiJjYXNsLmlvIiwiaXNzIjoiQ0FTTC5FeHByZXNzIn0.spW_RyEtpsj9W_NuHJ0mTM-ddhPX8xJyx8jGsKWbaoE
+# > Content-Length: 72
+# > 
+# } [72 bytes data]
+# * upload completely sent off: 72 out of 72 bytes
+# < HTTP/1.1 200 OK
+# < Content-Type: application/json; charset=utf-8
+# < Content-Length: 227
+# < ETag: W/"e3-ETQSumjsO+QfJiRaEE0XK4j2BYA"
+# < Date: Sun, 08 Dec 2019 07:19:33 GMT
+# < Connection: keep-alive
+# < 
+# { [227 bytes data]
+# * Connection #0 to host localhost left intact
+
+echo $POST_CREATE | json-parse -f json -i 4
 # {
 #     "post": {
-#         "_id": "5de518b4f8ae9e3f682f6c95",
+#         "_id": "5deca4057f1bda6e3127d7f6",
 #         "title": "Yet a first article...",
 #         "text": "Ouahh ... Too good!",
-#         "author": "5de517adf8ae9e3f682f6c92",
-#         "createdAt": "2019-12-02T13:59:16.170Z",
-#         "updatedAt": "2019-12-02T13:59:16.170Z",
+#         "author": "5deca4047f1bda6e3127d7f3",
+#         "createdAt": "2019-12-08T07:19:33.293Z",
+#         "updatedAt": "2019-12-08T07:19:33.293Z",
 #         "__v": 0
 #     }
 # }
 
-curl -X PATCH "http://localhost:3002/posts/5de518b4f8ae9e3f682f6c95" -H "Content-Type: application/json" -H "Authorization: $ACCESS_TOKEN" -d '{"post":{"title":"Some changes"}}' -w '\n' -sS | json-parse -f json -i 4
+curl -X PATCH "http://localhost:3002/posts/$POST_ID" -H "Content-Type: application/json" -H "Authorization: $ACCESS_TOKEN" -d '{"post":{"title":"Some changes"}}' -w '\n' -sS | json-parse -f json -i 4
 # {
 #     "post": {
-#         "_id": "5de518b4f8ae9e3f682f6c95",
+#         "_id": "5deca4057f1bda6e3127d7f6",
 #         "title": "Some changes",
 #         "text": "Ouahh ... Too good!",
-#         "author": "5de517adf8ae9e3f682f6c92",
-#         "createdAt": "2019-12-02T13:59:16.170Z",
-#         "updatedAt": "2019-12-02T14:00:54.006Z",
+#         "author": "5deca4047f1bda6e3127d7f3",
+#         "createdAt": "2019-12-08T07:19:33.293Z",
+#         "updatedAt": "2019-12-08T07:19:33.435Z",
 #         "__v": 0
 #     }
 # }
